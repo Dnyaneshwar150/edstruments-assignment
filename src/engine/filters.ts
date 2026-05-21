@@ -57,7 +57,7 @@ export const applyDateFilter = (
       const weekAgo = startOfDay(
         new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000),
       );
-      return dateValue >= weekAgo;
+      return dateValue >= weekAgo && dateValue <= now;
     }
     case "last 30 days": {
       if (isEmpty) return false;
@@ -65,7 +65,8 @@ export const applyDateFilter = (
       const monthAgo = startOfDay(
         new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000),
       );
-      return dateValue >= monthAgo;
+
+      return dateValue >= monthAgo && dateValue <= now;
     }
     case "is empty":
       return isEmpty;

@@ -142,22 +142,33 @@ export const useFilters = <T extends Record<string, unknown>>(
   );
 
   const exportCSV = useCallback(() => {
-    const headers = columns.map((c) => c.label).join(",");
+    /** Safely escape a CSV cell value */
+    const escapeCell = (val: unknown): string => {
+      if (val == null) return "";
+      const str = Array.isArray(val)
+        ? val.join("; ") // semicolon separator avoids comma-splitting
+        : String(val);
+      // Wrap in quotes if contains comma, quote, or newline
+      if (str.includes('"') || str.includes(",") || str.includes("\n")) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+      return str;
+    };
+
+    const headers = columns.map((c) => escapeCell(c.label)).join(",");
     const rows = filteredData.map((row) =>
       columns
         .map((col) => {
           const val = getNestedValue(row, col.key);
-          const formatted = col.format
-            ? col.format(val)
-            : Array.isArray(val)
-            ? `"${val.join(", ")}"`
-            : String(val ?? "");
-          return formatted.includes(",") ? `"${formatted}"` : formatted;
+          // Use format fn if available (e.g. currency, date), but never for arrays
+          const formatted =
+            col.format && !Array.isArray(val) ? col.format(val) : val;
+          return escapeCell(formatted);
         })
         .join(","),
     );
     const csv = [headers, ...rows].join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;

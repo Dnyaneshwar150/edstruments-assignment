@@ -33,7 +33,6 @@ export const applyFilters = <T extends Record<string, unknown>>(
   if (filters.length === 0) return data;
 
   const columnMap = new Map(columns.map((c) => [c.key, c]));
-  console.log("columnMap", columnMap);
 
   const filtersByField = new Map<string, FilterCondition[]>();
   for (const filter of filters) {
