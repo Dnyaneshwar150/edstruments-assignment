@@ -75,3 +75,17 @@ To display the table, you render the `<CustomTable />` component and pass it the
 *   **sort / onSort:** Active sorting state and click handlers.
 *   **page / rowsPerPage / totalRows / onPageChange / onRowsPerPageChange:** Pagination states and handler callbacks.
 *   **onExportCSV:** Download handler to trigger CSV extraction.
+
+---
+
+## 💾 State Persistence & Design Decisions
+
+### 1. Local Storage Persistence
+All active filters are automatically serialized and stored in the browser's `localStorage` whenever they are created, updated, or removed. This ensures that the user's active filter criteria are preserved across page refreshes and reloads.
+
+### 2. Architectural Choices (Action-Driven vs. Keystroke-Driven)
+> [!NOTE]
+> I intentionally kept filtering action-driven instead of keystroke-driven because the assignment emphasized reusable architecture and filtering correctness more than UX optimization details like debounce behavior.
+>
+> Since filtering logic is already isolated in a pure filtering engine, adding debounced filtering later would only require changes at the input interaction layer, not in the core architecture.
+
