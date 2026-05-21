@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { ColumnConfig } from "../../types/table";
 import { FilterValue, OperatorConfig } from "../../types/filters";
-import { debounce } from "../../utils/debounce";
+import { debounce } from "../../utils/helper";
 
 interface DynamicInputProps {
   column: ColumnConfig;
@@ -22,13 +22,6 @@ interface DynamicInputProps {
   onChange: (value: FilterValue) => void;
 }
 
-/**
- * Dynamically renders the appropriate input control based on:
- * - column.type (text, number, date, boolean, select, multiSelect)
- * - operator.valueCount (single, multiple, range)
- *
- * No field-specific logic — everything is type-driven.
- */
 export const DynamicInput: React.FC<DynamicInputProps> = React.memo(
   ({ column, operator, value, onChange }) => {
     const [localValue, setLocalValue] = useState<string>(
